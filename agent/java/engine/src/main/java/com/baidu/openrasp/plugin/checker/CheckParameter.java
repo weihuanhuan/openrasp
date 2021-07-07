@@ -17,13 +17,13 @@
 package com.baidu.openrasp.plugin.checker;
 
 import com.baidu.openrasp.HookHandler;
+import com.baidu.openrasp.plugin.checker.js.JsChecker;
 import com.baidu.openrasp.plugin.checker.local.SqlResultChecker;
 import com.baidu.openrasp.plugin.checker.local.XssChecker;
 import com.baidu.openrasp.plugin.checker.policy.LogChecker;
 import com.baidu.openrasp.plugin.checker.policy.MongoConnectionChecker;
 import com.baidu.openrasp.plugin.checker.policy.SqlConnectionChecker;
 import com.baidu.openrasp.plugin.checker.policy.server.*;
-import com.baidu.openrasp.plugin.checker.v8.V8AttackChecker;
 import com.baidu.openrasp.request.AbstractRequest;
 import com.google.gson.Gson;
 
@@ -40,28 +40,28 @@ public class CheckParameter {
 
     public enum Type {
         // js插件检测
-        SQL("sql", new V8AttackChecker(), 1),
-        COMMAND("command", new V8AttackChecker(), 1 << 1),
-        DIRECTORY("directory", new V8AttackChecker(), 1 << 2),
-        REQUEST("request", new V8AttackChecker(), 1 << 3),
-        READFILE("readFile", new V8AttackChecker(), 1 << 5),
-        WRITEFILE("writeFile", new V8AttackChecker(), 1 << 6),
-        FILEUPLOAD("fileUpload", new V8AttackChecker(), 1 << 7),
-        RENAME("rename", new V8AttackChecker(), 1 << 8),
-        XXE("xxe", new V8AttackChecker(), 1 << 9),
-        OGNL("ognl", new V8AttackChecker(), 1 << 10),
-        DESERIALIZATION("deserialization", new V8AttackChecker(), 1 << 11),
-        WEBDAV("webdav", new V8AttackChecker(), 1 << 12),
-        INCLUDE("include", new V8AttackChecker(), 1 << 13),
-        SSRF("ssrf", new V8AttackChecker(), 1 << 14),
-        SQL_EXCEPTION("sql_exception", new V8AttackChecker(), 1 << 15),
-        REQUESTEND("requestEnd", new V8AttackChecker(), 1 << 17),
-        DELETEFILE("deleteFile", new V8AttackChecker(), 1 << 18),
-        MONGO("mongodb", new V8AttackChecker(), 1 << 19),
-        LOADLIBRARY("loadLibrary", new V8AttackChecker(), 1 << 20),
-        SSRF_REDIRECT("ssrfRedirect", new V8AttackChecker(), 1 << 21),
-        RESPONSE("response", new V8AttackChecker(false), 1 << 23),
-        LINK("link", new V8AttackChecker(), 1 << 24),
+        SQL("sql", new JsChecker(), 1),
+        COMMAND("command", new JsChecker(), 1 << 1),
+        DIRECTORY("directory", new JsChecker(), 1 << 2),
+        REQUEST("request", new JsChecker(), 1 << 3),
+        READFILE("readFile", new JsChecker(), 1 << 5),
+        WRITEFILE("writeFile", new JsChecker(), 1 << 6),
+        FILEUPLOAD("fileUpload", new JsChecker(), 1 << 7),
+        RENAME("rename", new JsChecker(), 1 << 8),
+        XXE("xxe", new JsChecker(), 1 << 9),
+        OGNL("ognl", new JsChecker(), 1 << 10),
+        DESERIALIZATION("deserialization", new JsChecker(), 1 << 11),
+        WEBDAV("webdav", new JsChecker(), 1 << 12),
+        INCLUDE("include", new JsChecker(), 1 << 13),
+        SSRF("ssrf", new JsChecker(), 1 << 14),
+        SQL_EXCEPTION("sql_exception", new JsChecker(), 1 << 15),
+        REQUESTEND("requestEnd", new JsChecker(), 1 << 17),
+        DELETEFILE("deleteFile", new JsChecker(), 1 << 18),
+        MONGO("mongodb", new JsChecker(), 1 << 19),
+        LOADLIBRARY("loadLibrary", new JsChecker(), 1 << 20),
+        SSRF_REDIRECT("ssrfRedirect", new JsChecker(), 1 << 21),
+        RESPONSE("response", new JsChecker(false), 1 << 23),
+        LINK("link", new JsChecker(), 1 << 24),
 
         // java本地检测
         XSS_USERINPUT("xss_userinput", new XssChecker(), 1 << 16),

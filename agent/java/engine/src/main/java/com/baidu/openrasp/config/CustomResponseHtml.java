@@ -21,7 +21,7 @@ import com.baidu.openrasp.messaging.ErrorType;
 import com.baidu.openrasp.messaging.LogTool;
 import com.baidu.openrasp.tool.filemonitor.FileScanListener;
 import com.baidu.openrasp.tool.filemonitor.FileScanMonitor;
-import com.fuxi.javaagent.contentobjects.jnotify.JNotifyException;
+import com.baidu.openrasp.tool.filemonitor.JDKNotifyException;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -66,7 +66,7 @@ public class CustomResponseHtml extends FileScanListener {
                 watchId = FileScanMonitor.addMonitor(
                         file.getParent(), instance);
             }
-        } catch (JNotifyException e) {
+        } catch (JDKNotifyException e) {
             throw new ConfigLoadException("add listener on " + file.getAbsolutePath() + " failed because:" + e.getMessage());
         } catch (IOException e) {
             throw new ConfigLoadException("Fail to extract " + CUSTOM_RESPONSE_DEFAULT_NAME

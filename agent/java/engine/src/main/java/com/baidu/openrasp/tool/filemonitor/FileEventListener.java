@@ -17,7 +17,6 @@
 package com.baidu.openrasp.tool.filemonitor;
 
 
-import com.fuxi.javaagent.contentobjects.jnotify.JNotifyListener;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 
 /**
@@ -26,7 +25,7 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
  * 使用系统事件作为驱动，实时性高
  * 将事件传递给观察者，由观察者扫描该文件夹来进一步确定事件事件具体类型
  */
-public class FileEventListener implements JNotifyListener {
+public class FileEventListener implements JDKFileListener {
 
     private FileAlterationObserver observer;
 
@@ -43,8 +42,7 @@ public class FileEventListener implements JNotifyListener {
      * 文件重命名事件回调接口
      */
     @Override
-    public void fileRenamed(int wd, String rootPath, String oldName,
-                            String newName) {
+    public void fileRenamed() {
         observer.checkAndNotify();
     }
 
@@ -52,7 +50,7 @@ public class FileEventListener implements JNotifyListener {
      * 文件修改事件回调接口
      */
     @Override
-    public void fileModified(int wd, String rootPath, String name) {
+    public void fileModified() {
         observer.checkAndNotify();
     }
 
@@ -60,7 +58,7 @@ public class FileEventListener implements JNotifyListener {
      * 文件文件删除事件回调接口
      */
     @Override
-    public void fileDeleted(int wd, String rootPath, String name) {
+    public void fileDeleted() {
         observer.checkAndNotify();
     }
 
@@ -68,7 +66,7 @@ public class FileEventListener implements JNotifyListener {
      * 文件创建事件回调接口
      */
     @Override
-    public void fileCreated(int wd, String rootPath, String name) {
+    public void fileCreated() {
         observer.checkAndNotify();
     }
 

@@ -1,0 +1,87 @@
+<project name="precompiled" default="default" basedir=".">
+
+    <target name="taskdef">
+        <taskdef resource="net/sf/antcontrib/antlib.xml">
+            <classpath>
+                <pathelement path="${pluginClasspath}"/>
+            </classpath>
+        </taskdef>
+    </target>
+
+    <target name="default">
+        <antcall target="environment"/>
+    </target>
+
+    <target name="init" depends="taskdef">
+        <property file="${basedir}/build.properties"/>
+    </target>
+
+    <target name="precompiled" depends="init">
+        <echo level="info">precompile js file.</echo>
+
+        <for param="jsFile">
+            <path>
+                <fileset dir="${jsDirectory}">
+                    <include name="**/*.js"/>
+                </fileset>
+            </path>
+
+            <sequential>
+                <var name="jsFileName" unset="true"/>
+                <basename property="jsFileName" file="@{jsFile}" suffix=".js"/>
+                <capitalize from="${jsFileName}" to="className"/>
+
+                <java classname="${main}" fork="${fork}">
+                    <classpath>
+                        <pathelement path="${pluginClasspath}"/>
+                    </classpath>
+                    <arg value="-version"/>
+                    <arg value="${version}"/>
+                    <arg value="-opt"/>
+                    <arg value="${opt}"/>
+                    <arg value="-nosource"/>
+                    <arg value="-package"/>
+                    <arg value="${package}"/>
+                    <arg value="-d"/>
+                    <arg value="${outputDirectory}"/>
+                    <arg value="-o"/>
+                    <arg value="${className}"/>
+                    <arg value="@{jsFile}"/>
+                </java>
+            </sequential>
+        </for>
+    </target>
+
+    <target name="environment" depends="precompiled">
+        <echo level="info">generate environment file.</echo>
+
+        <fileset dir="${outputDirectory}" id="classFiles">
+            <include name="**/*.class"/>
+        </fileset>
+
+        <pathconvert property="orig.list" refid="classFiles" pathsep="${line.separator}">
+            <mapper>
+                <chainedmapper>
+                    <flattenmapper/>
+                    <regexpmapper from="^(.*)\.class$$" to="${package}.\1"/>
+                </chainedmapper>
+            </mapper>
+        </pathconvert>
+
+        <sortlist property="sorted.list" value="${orig.list}" delimiter="${line.separator}"
+                  orderPropertyFile="${order}" orderPropertyFilePrefix="${package}"/>
+        <echo file="${outputDirectory}/${environment}" append="true">${line.separator}</echo>
+        <echo file="${outputDirectory}/${environment}" append="true">${sorted.list}</echo>
+    </target>
+
+    <scriptdef language="javascript" name="capitalize">
+        <attribute name="from"/>
+        <attribute name="to"/>
+
+        var s = new String( attributes.get( "from" ) );
+        project.setProperty( attributes.get( "to" ),
+        s.toLowerCase().replace( /^.|\s\S/g,
+        function(a) { return a.toUpperCase(); }) );
+    </scriptdef>
+
+</project>

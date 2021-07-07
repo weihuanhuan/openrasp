@@ -27,7 +27,7 @@ import com.baidu.openrasp.tool.FilterConstructor;
 import com.baidu.openrasp.tool.LRUCache;
 import com.baidu.openrasp.tool.filemonitor.FileScanListener;
 import com.baidu.openrasp.tool.filemonitor.FileScanMonitor;
-import com.fuxi.javaagent.contentobjects.jnotify.JNotifyException;
+import com.baidu.openrasp.tool.filemonitor.JDKNotifyException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -146,14 +146,14 @@ public class Config extends FileScanListener {
                 try {
                     FileScanMonitor.addMonitor(
                             baseDirectory, instance);
-                } catch (JNotifyException e) {
+                } catch (JDKNotifyException e) {
                     throw new ConfigLoadException("add listener on " + baseDirectory + " failed because:" + e.getMessage());
                 }
                 addConfigFileMonitor();
             }
         } catch (FileNotFoundException e) {
             handleException("Could not find openrasp.yml, using default settings: " + e.getMessage(), e);
-        } catch (JNotifyException e) {
+        } catch (JDKNotifyException e) {
             handleException("add listener on " + configFileDir + " failed because:" + e.getMessage(), e);
         } catch (Exception e) {
             handleException("cannot load properties file: " + e.getMessage(), e);
@@ -282,7 +282,7 @@ public class Config extends FileScanListener {
         }
     }
 
-    private void addConfigFileMonitor() throws JNotifyException {
+    private void addConfigFileMonitor() throws JDKNotifyException {
         if (watchId != null) {
             FileScanMonitor.removeMonitor(watchId);
         }

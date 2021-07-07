@@ -26,8 +26,6 @@ import com.baidu.openrasp.plugin.js.JS;
 import com.baidu.openrasp.tool.cpumonitor.CpuMonitorManager;
 import com.baidu.openrasp.tool.model.BuildRASPModel;
 import com.baidu.openrasp.transformer.CustomClassTransformer;
-import com.baidu.openrasp.v8.CrashReporter;
-import com.baidu.openrasp.v8.Loader;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -53,13 +51,6 @@ public class EngineBoot implements Module {
                 "/ /_/ / /_/ /  __/ / / / _, _/ ___ |___/ / ____/ \n" +
                 "\\____/ .___/\\___/_/ /_/_/ |_/_/  |_/____/_/      \n" +
                 "    /_/                                          \n\n");
-        try {
-            Loader.load();
-        } catch (Exception e) {
-            System.out.println("[OpenRASP] Failed to load native library, please refer to https://rasp.baidu.com/doc/install/software.html#faq-v8-load for possible solutions.");
-            e.printStackTrace();
-            return;
-        }
         if (!loadConfig()) {
             return;
         }
@@ -73,9 +64,6 @@ public class EngineBoot implements Module {
         CheckerManager.init();
         initTransformer(inst);
         if (CloudUtils.checkCloudControlEnter()) {
-            CrashReporter.install(Config.getConfig().getCloudAddress() + "/v1/agent/crash/report",
-                    Config.getConfig().getCloudAppId(), Config.getConfig().getCloudAppSecret(),
-                    CloudCacheModel.getInstance().getRaspId());
         }
         deleteTmpDir();
         String message = "[OpenRASP] Engine Initialized [" + Agent.projectVersion + " (build: GitCommit="

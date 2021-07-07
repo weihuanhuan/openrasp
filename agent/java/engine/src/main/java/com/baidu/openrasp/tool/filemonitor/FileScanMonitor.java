@@ -17,12 +17,15 @@
 package com.baidu.openrasp.tool.filemonitor;
 
 import com.baidu.openrasp.config.Config;
-import com.fuxi.javaagent.contentobjects.jnotify.JNotify;
-import com.fuxi.javaagent.contentobjects.jnotify.JNotifyException;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tyy on 4/17/17.
@@ -32,8 +35,7 @@ public class FileScanMonitor {
 
     static {
         if (!Config.getConfig().getCloudSwitch()) {
-            JnotifyWatcher watcher = new JnotifyWatcher();
-            JNotify.init(Config.baseDirectory, watcher);
+            JDKNotify.init(Config.baseDirectory);
         }
     }
 
@@ -43,17 +45,21 @@ public class FileScanMonitor {
      * @param path     监听的文件夹路径
      * @param listener 事件回调接口
      * @return 监听器的id
-     * @throws JNotifyException {@link JNotifyException}
+     * @throws JDKNotifyException {@link JDKNotifyException}
      */
-    public static int addMonitor(String path, FileAlterationListener listener) throws JNotifyException {
+    public static int addMonitor(String path, FileAlterationListener listener) throws JDKNotifyException {
         if (!Config.getConfig().getCloudSwitch()) {
             File file = new File(path);
             FileAlterationObserver observer = new FileAlterationObserver(file);
             observer.checkAndNotify();
             observer.addListener(listener);
-            int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED
-                    | JNotify.FILE_MODIFIED;
-            return JNotify.addWatch(path, mask, false, new FileEventListener(observer));
+
+            List<WatchEvent.Kind<Path>> kindList = new ArrayList<>();
+            kindList.add(StandardWatchEventKinds.ENTRY_CREATE);
+            kindList.add(StandardWatchEventKinds.ENTRY_DELETE);
+            kindList.add(StandardWatchEventKinds.ENTRY_MODIFY);
+            int watch = JDKNotify.addWatch(path, kindList, false, new FileEventListener(observer));
+            return watch;
         }
         return 0;
     }
@@ -66,8 +72,8 @@ public class FileScanMonitor {
     public static void removeMonitor(int watchId) {
         if (!Config.getConfig().getCloudSwitch()) {
             try {
-                JNotify.removeWatch(watchId);
-            } catch (JNotifyException e) {
+                JDKNotify.removeWatch(watchId);
+            } catch (JDKNotifyException e) {
                 e.printStackTrace();
             }
         }

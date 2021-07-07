@@ -21,6 +21,7 @@ import com.baidu.openrasp.cloud.model.CloudCacheModel;
 import com.baidu.openrasp.cloud.model.GenericResponse;
 import com.baidu.openrasp.config.Config;
 import com.baidu.openrasp.messaging.ErrorType;
+import com.baidu.openrasp.messaging.ExceptionModel;
 import com.baidu.openrasp.messaging.LogTool;
 import com.baidu.openrasp.tool.OSUtil;
 import com.google.gson.*;
@@ -202,6 +203,11 @@ public class CloudUtils {
             result = result + " Description: " + message;
         }
         return result.trim();
+    }
+
+    public static ExceptionModel getExceptionObject(ErrorType errorType, String message) {
+        ExceptionModel model = new ExceptionModel(errorType, message);
+        return model;
     }
 
 }

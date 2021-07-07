@@ -41,7 +41,7 @@ var algorithmConfig = {
     // 快速设置
     meta: {
         // 若 all_log 开启，表示为观察模式，会将所有的 block 都改为 log
-        all_log: true,
+        all_log: false,
 
         // 若 is_dev 开启，表示为线下环境，将开启更多消耗性能的检测算法
         is_dev:  false,
@@ -136,7 +136,7 @@ var algorithmConfig = {
 
     sql_exception: {
         name:      '算法3 - 记录数据库异常',
-        action:    'log',
+        action:    'block',
         reference: 'https://rasp.baidu.com/doc/dev/official.html#sql-exception',
 
         // error_code 最多允许 100 个，超过直接清空
@@ -206,7 +206,7 @@ var algorithmConfig = {
 
     sql_regex: {
         name:      '算法4 - 正则表达式算法',
-        action:    'ignore',
+        action:    'block',
         regex:     'union.*select.*from.*information_schema'
     },
 
@@ -295,7 +295,7 @@ var algorithmConfig = {
     // 任意文件下载防护 - 读取敏感文件，最后一道防线
     readFile_unwanted: {
         name:   '算法5 - 文件探针算法',
-        action: 'log'
+        action: 'block'
     },
 
     // 写文件操作 - NTFS 流
@@ -320,7 +320,7 @@ var algorithmConfig = {
 
     writeFile_reflect: {
         name:      '算法3 - 拦截通过反射、反序列化执行的文件写入操作',
-        action:    'log'
+        action:    'block'
     },
 
     // 任意文件删除 - 使用 ../跳出目录
@@ -359,7 +359,7 @@ var algorithmConfig = {
     // 文件管理器 - 查看敏感目录
     directory_unwanted: {
         name:   '算法3 - 尝试查看敏感目录',
-        action: 'log'
+        action: 'block'
     },
 
     // 文件包含 - 用户输入匹配
@@ -398,7 +398,7 @@ var algorithmConfig = {
     // XXE - 代码安全开关，通过调用相关函数直接禁止外部实体
     xxe_disable_entity: {
         name:   '算法1 - 禁止外部实体加载（记录日志等同于完全忽略）',
-        action: 'ignore',
+        action: 'block',
         clazz:  {
             // com/sun/org/apache/xerces/internal/jaxp/DocumentBuilderFactoryImpl
             java_dom:   true,
@@ -433,7 +433,7 @@ var algorithmConfig = {
     xxe_file: {
         name:      '算法3 - 使用 file:// 协议读取文件',
         reference: 'https://rasp.baidu.com/doc/dev/official.html#case-xxe',
-        action:    'log',
+        action:    'block',
     },
 
     // 文件上传 - COPY/MOVE 方式，仅适合 tomcat
@@ -449,12 +449,12 @@ var algorithmConfig = {
     // 文件上传 - Multipart 方式上传 HTML/JS 等文件
     fileUpload_multipart_html: {
         name:   '算法3 - Multipart 方式上传 HTML/JS 等文件',
-        action: 'ignore'
+        action: 'block'
     },
     // 文件上传 - Multipart 方式上传 DLL/EXE 等文件
     fileUpload_multipart_exe: {
         name:   '算法3 - Multipart 方式上传 DLL/EXE 等文件',
-        action: 'ignore'
+        action: 'block'
     },    
 
     // OGNL 代码执行漏洞
@@ -478,13 +478,13 @@ var algorithmConfig = {
     // 命令注入 - 常见命令
     command_common: {
         name:    '算法3 - 识别常用渗透命令（探针）',
-        action:  'log',
+        action:  'block',
         pattern: 'cat.{1,5}/etc/passwd|nc.{1,30}-e.{1,100}/bin/(?:ba)?sh|bash\\s-.{0,4}i.{1,20}/dev/tcp/|subprocess.call\\(.{0,6}/bin/(?:ba)?sh|fsockopen\\(.{1,50}/bin/(?:ba)?sh|perl.{1,80}socket.{1,120}open.{1,80}exec\\(.{1,5}/bin/(?:ba)?sh'
     },
     // 命令执行 - 语法错误和敏感操作
     command_error: {
         name:   '算法4 - 查找语法错误和敏感操作',
-        action: 'log',
+        action: 'block',
 
         unbalanced_quote_enable: true,
 
@@ -498,7 +498,7 @@ var algorithmConfig = {
     // 命令执行 - 是否拦截所有命令执行？如果没有执行命令的需求，可以改为 block，最大程度的保证服务器安全
     command_other: {
         name:   '算法5 - 记录或者拦截所有命令执行操作',
-        action: 'ignore'
+        action: 'block'
     },
 
     // transformer 反序列化攻击
@@ -512,7 +512,7 @@ var algorithmConfig = {
     // 2. 当用户输入长度超过15，匹配上标签正则这样的参数个数超过 10，判定为扫描攻击，直接拦截（v1.1.2 之后废弃）
     xss_userinput: {
         name:   '算法2 - 拦截输出在响应里的反射 XSS',
-        action: 'ignore',
+        action: 'block',
 
         filter_regex: "<![\\-\\[A-Za-z]|<([A-Za-z]{1,12})[\\/>\\x00-\\x20]",
         min_length:   15,
@@ -524,7 +524,7 @@ var algorithmConfig = {
     // php 专有算法
     xss_echo: {
         name:   '算法1 - PHP: 禁止直接输出 GPC 参数',
-        action: 'log',
+        action: 'block',
 
         filter_regex: "<![\\-\\[A-Za-z]|<([A-Za-z]{1,12})[\\/>\\x00-\\x20]"
     },    
@@ -559,7 +559,7 @@ var algorithmConfig = {
 
     eval_regex: {
         name:   '算法1 - 正则表达式',
-        action: 'ignore',
+        action: 'block',
         regex:  'base64_decode|gzuncompress|create_function'
     },
 
@@ -575,7 +575,7 @@ var algorithmConfig = {
 
     response_dataLeak: {
         name:   '算法1 - 检查响应里是否有敏感信息（拦截等于记录日志）',
-        action: 'ignore',
+        action: 'block',
 
         // 检查类型
         kind: {
@@ -1201,7 +1201,7 @@ function is_token_changed(raw_tokens, userinput_idx, userinput_length, distance,
     // 寻找 token 起始点，可以改为二分查找
     for (var i = 0; i < raw_tokens.length; i++)
     {
-        if (raw_tokens[i].stop > userinput_idx)
+        if (raw_tokens[i].stop >= userinput_idx)
         {
             start = i
             break
@@ -1212,7 +1212,7 @@ function is_token_changed(raw_tokens, userinput_idx, userinput_length, distance,
     // 需要返回真实distance, 删除 最多需要遍历 distance 个 token  i < start + distance 条件
     for (var i = start; i < raw_tokens.length; i++)
     {
-        if (raw_tokens[i].stop >= userinput_idx + userinput_length)
+        if (raw_tokens[i].stop >= userinput_idx + userinput_length - 1)
         {
             end = i
             break
@@ -2932,7 +2932,7 @@ if (algorithmConfig.deserialization_transformer.action != 'ignore') {
 
 // 匹配身份证
 function findFirstIdentityCard(data) {
-    const regexChineseId = /(?<!\d)\d{10}(?:[01]\d)(?:[0123]\d)\d{3}(?:\d|x|X)(?!\d)/;
+    const regexChineseId = /\d{10}(?:[01]\d)(?:[0123]\d)\d{3}(?:\d|x|X)(?!\d)/;
     const W = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
     const m = regexChineseId.exec(data)
     if (m) {
@@ -2958,7 +2958,7 @@ function findFirstIdentityCard(data) {
 
 // 匹配手机号
 function findFirstMobileNumber(data) {
-    const regexChinesePhone = /(?<!\w)(?:(?:00|\+)?86 ?)?(1\d{2})(?:[ -]?\d){8}(?!\w)/;
+    const regexChinesePhone = /(?:(?:00|\+)?86 ?)?(1\d{2})(?:[ -]?\d){8}(?!\w)/;
     const prefixs = new Set([133, 149, 153, 173, 174, 177, 180,
         181, 189, 199, 130, 131, 132, 145, 146, 155, 156, 166, 175, 176, 185, 186, 134, 135, 136, 137, 138, 139,
         147, 148, 150, 151, 152, 157, 158, 159, 165, 178, 182, 183, 184, 187, 188, 198, 170
@@ -2977,7 +2977,7 @@ function findFirstMobileNumber(data) {
 
 // 匹配银行卡、信用卡
 function findFirstBankCard(data) {
-    const regexBankCard = /(?<!\d)(?:62|3|5[1-5]|4\d)\d{2}(?:[ -]?\d{4}){3}(?!\d)/;
+    const regexBankCard = /(?:62|3|5[1-5]|4\d)\d{2}(?:[ -]?\d{4}){3}(?!\d)/;
     let m = regexBankCard.exec(data)
     if (m) {
         let card = m[0].replace(/ |-/g, "");
@@ -3018,7 +3018,7 @@ if (algorithmConfig.response_dataLeak.action != 'ignore') {
 
         // 是否检查身份证泄露
         if (kind.identity_card) {
-            const data = findFirstIdentityCard(content)
+            let data = findFirstIdentityCard(content)
             if (data) {
                 items.push(data.match + '(' + data.type + ')')
                 parts.push(data)
@@ -3027,7 +3027,7 @@ if (algorithmConfig.response_dataLeak.action != 'ignore') {
 
         // 是否检查手机号泄露
         if (kind.phone) {
-            const data = findFirstMobileNumber(content)
+            let data = findFirstMobileNumber(content)
             if (data) {
                 items.push(data.match + '(' + data.type + ')')
                 parts.push(data)
@@ -3036,7 +3036,7 @@ if (algorithmConfig.response_dataLeak.action != 'ignore') {
 
         // 是否检查银行卡泄露
         if (kind.bank_card) {
-            const data = findFirstBankCard(content)
+            let data = findFirstBankCard(content)
             if (data) {
                 items.push(data.match + '(' + data.type + ')')
                 parts.push(data)
@@ -3050,7 +3050,7 @@ if (algorithmConfig.response_dataLeak.action != 'ignore') {
                 confidence: 80,
                 algorithm:  'response_dataLeak',
                 params: {
-                    parts
+                   parts: parts
                 }
             }
         }
