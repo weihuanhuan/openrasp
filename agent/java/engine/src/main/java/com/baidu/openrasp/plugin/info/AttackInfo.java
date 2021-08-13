@@ -116,6 +116,7 @@ public class AttackInfo extends EventInfo {
         info.put("server_hostname", OSUtil.getHostName());
         // 攻击类型
         info.put("attack_type", parameter.getType().toString());
+        info.put("attack_level", parameter.getType().getLevel().toString());
         // 攻击参数
         if (params == null) {
             params = parameter.getParams();

@@ -85,11 +85,13 @@ public class CheckParameter {
         String name;
         Checker checker;
         Integer code;
+        CheckLevel.Level level;
 
         Type(String name, Checker checker, Integer code) {
             this.name = name;
             this.checker = checker;
             this.code = code;
+            this.level = CheckLevel.getCheckLevel(this);
         }
 
         public String getName() {
@@ -107,6 +109,10 @@ public class CheckParameter {
         @Override
         public String toString() {
             return name;
+        }
+
+        public CheckLevel.Level getLevel() {
+            return level;
         }
     }
 
