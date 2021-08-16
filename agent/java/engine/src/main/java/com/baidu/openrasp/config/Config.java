@@ -117,6 +117,8 @@ public class Config extends FileScanListener {
     boolean iastEnable;
     static Config instance;
 
+    String instanceName;
+    String clusterName;
 
     static {
         baseDirectory = FileUtil.getBaseDir();
@@ -869,6 +871,22 @@ public class Config extends FileScanListener {
 
     public int getResponseSamplerBurst() {
         return responseSamplerBurst;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
+    }
+
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
+    }
+
+    public String getClusterName() {
+        return clusterName;
     }
 
     //--------------------------统一的配置处理------------------------------------

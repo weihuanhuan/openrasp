@@ -117,6 +117,11 @@ public class AttackInfo extends EventInfo {
         // 攻击类型
         info.put("attack_type", parameter.getType().toString());
         info.put("attack_level", parameter.getType().getLevel().toString());
+        info.put("instance_name", Config.getConfig().getInstanceName());
+        info.put("cluster_name", Config.getConfig().getClusterName());
+        if (request != null) {
+            info.put("context_path", request.getContextPath());
+        }
         // 攻击参数
         if (params == null) {
             params = parameter.getParams();

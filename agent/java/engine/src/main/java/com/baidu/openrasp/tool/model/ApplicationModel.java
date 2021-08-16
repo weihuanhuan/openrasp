@@ -17,6 +17,7 @@
 package com.baidu.openrasp.tool.model;
 
 import com.baidu.openrasp.HookHandler;
+import com.baidu.openrasp.detector.helper.ServerHelper;
 import com.baidu.openrasp.messaging.ErrorType;
 import com.baidu.openrasp.messaging.LogTool;
 import org.apache.commons.io.FileUtils;
@@ -40,6 +41,8 @@ public class ApplicationModel {
 
     private static final String SERVER_TYPE_PATH = "/proc/self/cgroup";
 
+    private static ServerHelper helper;
+
     static {
         systemEnvInfo = System.getenv();
         if (systemEnvInfo == null) {
@@ -61,6 +64,14 @@ public class ApplicationModel {
         applicationInfo.put("version", "");
         applicationInfo.put("extra", "");
         applicationInfo.put("StandardStart", "false");
+    }
+
+    public static ServerHelper getHelper() {
+        return helper;
+    }
+
+    public static void setHelper(ServerHelper helper) {
+        ApplicationModel.helper = helper;
     }
 
     public static synchronized void setServerInfo(String serverName, String version) {

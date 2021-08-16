@@ -20,6 +20,9 @@ import com.baidu.openrasp.HookHandler;
 import com.baidu.openrasp.cloud.CloudManager;
 import com.baidu.openrasp.cloud.Register;
 import com.baidu.openrasp.cloud.utils.CloudUtils;
+import com.baidu.openrasp.detector.helper.ServerHelper;
+import com.baidu.openrasp.detector.helper.ServerHelperManager;
+import com.baidu.openrasp.detector.helper.Supplier;
 import com.baidu.openrasp.messaging.ErrorType;
 import com.baidu.openrasp.messaging.LogTool;
 import com.baidu.openrasp.plugin.checker.CheckParameter;
@@ -55,8 +58,17 @@ public abstract class ServerDetector {
             HookHandler.enableHook.set(true);
             sendRegister();
             CpuMonitorManager.start();
+            ServerHelperManager.handleServerHelper(this.getClass());
         }
         return isDetected;
+    }
+
+    public synchronized static ServerHelper getServerHelper() {
+        ServerHelper helper = ApplicationModel.getHelper();
+        if (helper == null) {
+            helper = ServerHelperManager.getDummyHelper();
+        }
+        return helper;
     }
 
     public abstract boolean isClassMatched(String className);

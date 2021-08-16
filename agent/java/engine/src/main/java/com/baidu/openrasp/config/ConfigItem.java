@@ -746,6 +746,36 @@ public enum ConfigItem {
         public String getDefaultValue() {
             return "5";
         }
+    }),
+
+    INSTANCE_NAME(new ConfigSetter<String>("instance.name") {
+        @Override
+        public synchronized void setValue(String instanceName) {
+            if (instanceName == null) {
+                throw new ConfigLoadException(itemName + " must not be null");
+            }
+            Config.getConfig().setInstanceName(instanceName);
+        }
+
+        @Override
+        public String getDefaultValue() {
+            return ServerDetector.getServerHelper().getInstanceName();
+        }
+    }),
+
+    CLUSTER_NAME(new ConfigSetter<String>("cluster.name") {
+        @Override
+        public synchronized void setValue(String clusterName) {
+            if (clusterName == null) {
+                throw new ConfigLoadException(itemName + " must not be null");
+            }
+            Config.getConfig().setClusterName(clusterName);
+        }
+
+        @Override
+        public String getDefaultValue() {
+            return ServerDetector.getServerHelper().getClusterName();
+        }
     });
 
     ConfigItem(ConfigSetter setter) {
