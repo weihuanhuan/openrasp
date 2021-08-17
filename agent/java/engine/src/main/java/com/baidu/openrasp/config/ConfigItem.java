@@ -770,30 +770,24 @@ public enum ConfigItem {
     INSTANCE_NAME(new ConfigSetter<String>("instance.name") {
         @Override
         public synchronized void setValue(String instanceName) {
-            if (instanceName == null) {
-                throw new ConfigLoadException(itemName + " must not be null");
-            }
-            Config.getConfig().setInstanceName(instanceName);
+            Config.getConfig().instanceName = instanceName;
         }
 
         @Override
         public String getDefaultValue() {
-            return ServerDetector.getServerHelper().getInstanceName();
+            return null;
         }
     }),
 
     CLUSTER_NAME(new ConfigSetter<String>("cluster.name") {
         @Override
         public synchronized void setValue(String clusterName) {
-            if (clusterName == null) {
-                throw new ConfigLoadException(itemName + " must not be null");
-            }
-            Config.getConfig().setClusterName(clusterName);
+            Config.getConfig().clusterName = clusterName;
         }
 
         @Override
         public String getDefaultValue() {
-            return ServerDetector.getServerHelper().getClusterName();
+            return null;
         }
     });
 

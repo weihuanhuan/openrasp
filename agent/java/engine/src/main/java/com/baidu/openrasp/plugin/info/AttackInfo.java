@@ -118,13 +118,10 @@ public class AttackInfo extends EventInfo {
         // 攻击类型
         info.put("attack_type", parameter.getType().toString());
         info.put("attack_level", parameter.getType().getLevel().toString());
-        info.put("instance_name", Config.getConfig().getInstanceName());
-        info.put("cluster_name", Config.getConfig().getClusterName());
-        if (request != null) {
-            info.put("context_path", request.getContextPath());
-        }
         ServerHelper helper = ApplicationModel.getHelper();
         if (helper != null) {
+            info.put("instance_name", helper.getInstanceName());
+            info.put("cluster_name", helper.getClusterName());
             info.put("app_name", helper.getAppName(request));
         }
         // 攻击参数
@@ -198,6 +195,7 @@ public class AttackInfo extends EventInfo {
             // 请求方法
             String method = request.getMethod();
             info.put("request_method", method != null ? method.toLowerCase() : null);
+            info.put("context_path", request.getContextPath());
         }
         if (extras != null) {
             for (Entry<String, JsonElement> entry : extras.entrySet()) {

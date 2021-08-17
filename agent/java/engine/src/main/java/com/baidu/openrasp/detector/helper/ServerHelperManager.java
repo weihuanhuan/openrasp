@@ -31,19 +31,19 @@ public class ServerHelperManager {
 
     private static final ServerHelper DUMMY_HELPER = new DummyHelper();
 
-    private static final Map<Class<? extends ServerDetector>, ServerHelper> helper = new HashMap<>();
+    private static final Map<Class<? extends ServerDetector>, Class<? extends ServerHelper>> helper = new HashMap<>();
 
     static {
-        helper.put(TomcatDetector.class, new TomcatHelper());
-        helper.put(BESDetector.class, new BESHelper());
+        helper.put(TomcatDetector.class, TomcatHelper.class);
+        helper.put(BESDetector.class, BESHelper.class);
     }
 
     public static void handleServerHelper(Class<?> clazz) {
         try {
-            ServerHelper serverHelper = helper.get(clazz);
-            serverHelper.init();
+            Class<? extends ServerHelper> serverHelperClazz = helper.get(clazz);
+            ServerHelper serverHelper = serverHelperClazz.newInstance();
             ApplicationModel.setHelper(serverHelper);
-            LOGGER.info("setting server helper class: " + serverHelper.getClass());
+            LOGGER.info("setting server helper class: " + serverHelperClazz);
         } catch (Throwable e) {
             ApplicationModel.setHelper(DUMMY_HELPER);
             e.printStackTrace();

@@ -874,16 +874,8 @@ public class Config extends FileScanListener {
         return responseSamplerBurst;
     }
 
-    public void setInstanceName(String instanceName) {
-        this.instanceName = instanceName;
-    }
-
     public String getInstanceName() {
         return instanceName;
-    }
-
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
     }
 
     public String getClusterName() {
