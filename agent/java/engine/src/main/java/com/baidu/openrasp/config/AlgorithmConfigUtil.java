@@ -18,6 +18,8 @@ package com.baidu.openrasp.config;
 
 import com.baidu.openrasp.hook.sql.AbstractSqlHook;
 import com.baidu.openrasp.plugin.checker.local.ConfigurableChecker;
+import com.baidu.openrasp.tool.ExtendConflictException;
+import com.baidu.openrasp.tool.ExtendGsonTools;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -148,4 +150,32 @@ public class AlgorithmConfigUtil {
         return codes;
     }
 
+    public synchronized static void mergeSwitchConfig(JsonObject configObject) throws ExtendConflictException {
+        JsonObject switchObject = Config.getConfig().algorithmConfigSwitch;
+        JsonObject finalObject = ExtendGsonTools.extendJsonObjectPreferFirst(switchObject, configObject);
+        Config.getConfig().algorithmConfig = finalObject;
+    }
+
+    public synchronized static void mergeAlgorithmConfig(JsonObject switchObject) throws ExtendConflictException {
+        JsonObject configObject = Config.getConfig().algorithmConfig;
+        JsonObject finalObject = ExtendGsonTools.extendJsonObjectPreferFirst(switchObject, configObject);
+        Config.getConfig().algorithmConfig = finalObject;
+        Config.getConfig().algorithmConfigSwitch = switchObject;
+    }
+
+    public static void refreshSetting() {
+        try {
+            AlgorithmConfigUtil.setSqlErrorCodes();
+        } catch (Exception e) {
+            Config.LOGGER.warn(
+                    "failed to get the error_code element from algorithm config: " + e.getMessage(), e);
+        }
+
+        try {
+            AlgorithmConfigUtil.setLogRegexes();
+        } catch (Exception e) {
+            Config.LOGGER.warn(
+                    "failed to get the log_regex element from algorithm config: " + e.getMessage(), e);
+        }
+    }
 }

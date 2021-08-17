@@ -82,4 +82,157 @@ block.content_html: "</script><script>location.href=\"https://rasp.baidu.com/blo
 # syslog.reconnect_interval: 300000
 # syslog.facility: 1
 
+#instance.name: test-tomcat
+cluster.name: test-cluster
 
+algorithm.config.switch:
+  meta:
+    all_log: true
+  sql_userinput:
+    name: 算法1 - 用户输入匹配算法
+    action: log
+#  sql_policy:
+#    name: 算法2 - 拦截异常SQL语句
+#    action: block
+#  sql_exception:
+#    name: 算法3 - 记录数据库异常
+#    action: log
+  sql_regex:
+    name: 算法4 - 正则表达式算法
+    action: block
+  ssrf_userinput:
+    name: 算法1 - 用户输入匹配算法（支持 rebind 检测）
+    action: block
+  ssrf_aws:
+    name: 算法2 - 拦截 AWS/Aliyun/GCP metadata 访问
+    action: block
+  ssrf_common:
+    name: 算法3 - 拦截常见 dnslog 地址
+    action: block
+  ssrf_obfuscate:
+    name: 算法4 - 拦截混淆地址
+    action: block
+  ssrf_protocol:
+    name: 算法5 - 拦截 php:// 等异常协议
+    action: block
+  readFile_userinput:
+    name: 算法1 - 用户输入匹配算法
+    action: block
+  readFile_userinput_http:
+    name: 算法2 - 用户输入匹配算法 + http 协议
+    action: block
+  readFile_userinput_unwanted:
+    name: 算法3 - 拦截 php:// 等异常协议
+    action: block
+  readFile_outsideWebroot:
+    name: 算法4 - 禁止使用 ../../ 访问web目录以外的文件
+    action: ignore
+  readFile_unwanted:
+    name: 算法5 - 文件探针算法
+    action: block
+  writeFile_NTFS:
+    name: 算法1 - 拦截 NTFS ::$DATA 写入操作
+    action: block
+  writeFile_script:
+    name: 算法2 - 拦截 php/jsp 等脚本文件的写入操作
+    action: block
+  writeFile_reflect:
+    name: 算法3 - 拦截通过反射、反序列化执行的文件写入操作
+    action: block
+  deleteFile_userinput:
+    name: 算法1 - 用户输入匹配，禁止使用 ../ 删除文件
+    action: block
+  rename_webshell:
+    name: 算法1 - 通过重命名方式获取 WebShell
+    action: block
+  link_webshell:
+    name: 算法1 - 通过链接方式获取 WebShell
+    action: block
+  directory_userinput:
+    name: 算法1 - 用户输入匹配算法
+    action: block
+  directory_reflect:
+    name: 算法2 - 通过反射调用，查看目录内容
+    action: block
+  directory_unwanted:
+    name: 算法3 - 尝试查看敏感目录
+    action: block
+  include_userinput:
+    name: 算法1 - 用户输入匹配算法
+    action: block
+    lcs_search: false
+  include_protocol:
+    name: 算法2 - 尝试包含 jar:// 等异常协议
+    action: block
+  xxe_disable_entity:
+    name: 算法1 - 禁止外部实体加载（记录日志等同于完全忽略）
+    action: block
+  xxe_protocol:
+    name: 算法2 - 使用 ftp:// 等异常协议加载外部实体
+    action: block
+  xxe_file:
+    name: 算法3 - 使用 file:// 协议读取文件
+    action: block
+  fileUpload_webdav:
+    name: 算法1 - MOVE 方式上传脚本文件
+    action: block
+  fileUpload_multipart_script:
+    name: 算法2 - Multipart 方式上传 PHP/JSP 等脚本文件
+    action: block
+  fileUpload_multipart_html:
+    name: 算法3 - Multipart 方式上传 HTML/JS 等文件
+    action: block
+  fileUpload_multipart_exe:
+    name: 算法3 - Multipart 方式上传 DLL/EXE 等文件
+    action: block
+  ognl_exec:
+    name: 算法1 - 执行异常 OGNL 语句
+    action: block
+  command_reflect:
+    name: 算法1 - 通过反射执行命令，比如反序列化、加密后门
+    action: block
+  command_userinput:
+    name: 算法2 - 用户输入匹配算法，包括命令注入检测
+    action: block
+  command_common:
+    name: 算法3 - 识别常用渗透命令（探针）
+    action: block
+  command_error:
+    name: 算法4 - 查找语法错误和敏感操作
+    action: block
+  command_other:
+    name: 算法5 - 记录或者拦截所有命令执行操作
+    action: block
+  deserialization_transformer:
+    name: 算法1 - 拦截 transformer 反序列化攻击
+    action: block
+  xss_userinput:
+    name: 算法2 - 拦截输出在响应里的反射 XSS
+    action: block
+  xss_echo:
+    name: '算法1 - PHP: 禁止直接输出 GPC 参数'
+    action: block
+  webshell_eval:
+    name: 算法1 - 拦截简单的 PHP 中国菜刀后门
+    action: block
+  webshell_command:
+    name: 算法2 - 拦截简单的 PHP 命令执行后门
+    action: block
+  webshell_file_put_contents:
+    name: 算法3 - 拦截简单的 PHP 文件上传后门
+    action: block
+  webshell_callable:
+    name: 算法4 - 拦截简单的 PHP array_map/walk/filter 后门
+    action: block
+  webshell_ld_preload:
+    name: 算法5 - 拦截 PHP LD_PRELOAD 机制后门
+    action: block
+  eval_regex:
+    name: 算法1 - 正则表达式
+    action: block
+  loadLibrary_unc:
+    name: 算法1 - 拦截 UNC 路径类库加载
+    action: block
+  response_dataLeak:
+    name: 算法1 - 检查响应里是否有敏感信息（拦截等于记录日志）
+    action: block

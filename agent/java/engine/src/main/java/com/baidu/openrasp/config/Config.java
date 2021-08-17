@@ -78,6 +78,7 @@ public class Config extends FileScanListener {
     int blockStatusCode;
     int debugLevel;
     JsonObject algorithmConfig;
+    JsonObject algorithmConfigSwitch;
     String blockJson;
     String blockXml;
     String blockHtml;

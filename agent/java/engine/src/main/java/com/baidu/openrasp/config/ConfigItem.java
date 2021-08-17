@@ -20,9 +20,13 @@ import com.baidu.openrasp.HookHandler;
 import com.baidu.openrasp.cloud.model.HookWhiteModel;
 import com.baidu.openrasp.detector.ServerDetector;
 import com.baidu.openrasp.exceptions.ConfigLoadException;
+import com.baidu.openrasp.tool.ExtendConflictException;
 import com.baidu.openrasp.tool.LRUCache;
 import com.baidu.openrasp.tool.Reflection;
 import com.baidu.openrasp.tool.cpumonitor.CpuMonitorManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang3.StringUtils;
 
@@ -242,20 +246,15 @@ public enum ConfigItem {
     ALGORITHM_CONFIG(new ConfigSetter<String>("algorithm.config") {
         @Override
         public synchronized void setValue(String json) {
-            Config.getConfig().algorithmConfig = new JsonParser().parse(json).getAsJsonObject();
-            try {
-                AlgorithmConfigUtil.setSqlErrorCodes();
-            } catch (Exception e) {
-                Config.LOGGER.warn(
-                        "failed to get the error_code element from algorithm config: " + e.getMessage(), e);
-            }
+            JsonObject configObject = new JsonParser().parse(json).getAsJsonObject();
 
             try {
-                AlgorithmConfigUtil.setLogRegexes();
-            } catch (Exception e) {
-                Config.LOGGER.warn(
-                        "failed to get the log_regex element from algorithm config: " + e.getMessage(), e);
+                AlgorithmConfigUtil.mergeSwitchConfig(configObject);
+            } catch (ExtendConflictException e) {
+                throw new ConfigLoadException(itemName + " failed to merge algorithm.config.switch config", e);
             }
+
+            AlgorithmConfigUtil.refreshSetting();
         }
 
         @Override
@@ -263,6 +262,26 @@ public enum ConfigItem {
             return "{}";
         }
     }, false),
+
+    ALGORITHM_CONFIG_SWITCH(new ConfigSetter<Map>("algorithm.config.switch") {
+        @Override
+        public synchronized void setValue(Map map) {
+            JsonObject switchObject = new Gson().toJsonTree(map).getAsJsonObject();
+
+            try {
+                AlgorithmConfigUtil.mergeAlgorithmConfig(switchObject);
+            } catch (ExtendConflictException e) {
+                throw new ConfigLoadException(itemName + " failed to merge algorithm.config config", e);
+            }
+
+            AlgorithmConfigUtil.refreshSetting();
+        }
+
+        @Override
+        public Map getDefaultValue() {
+            return Collections.emptyMap();
+        }
+    }),
 
     CLIENT_IP_HEADER(new ConfigSetter<String>("clientip.header") {
         @Override
