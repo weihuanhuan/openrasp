@@ -18,6 +18,7 @@ package com.baidu.openrasp.plugin.info;
 
 import com.baidu.openrasp.cloud.model.CloudCacheModel;
 import com.baidu.openrasp.config.Config;
+import com.baidu.openrasp.detector.helper.ServerHelper;
 import com.baidu.openrasp.plugin.checker.CheckParameter;
 import com.baidu.openrasp.request.AbstractRequest;
 import com.baidu.openrasp.tool.OSUtil;
@@ -121,6 +122,10 @@ public class AttackInfo extends EventInfo {
         info.put("cluster_name", Config.getConfig().getClusterName());
         if (request != null) {
             info.put("context_path", request.getContextPath());
+        }
+        ServerHelper helper = ApplicationModel.getHelper();
+        if (helper != null) {
+            info.put("app_name", helper.getAppName(request));
         }
         // 攻击参数
         if (params == null) {

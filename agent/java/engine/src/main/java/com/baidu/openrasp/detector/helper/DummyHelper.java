@@ -1,5 +1,7 @@
 package com.baidu.openrasp.detector.helper;
 
+import com.baidu.openrasp.request.AbstractRequest;
+
 public class DummyHelper extends ServerHelper {
 
     @Override
@@ -9,6 +11,11 @@ public class DummyHelper extends ServerHelper {
 
     @Override
     protected Supplier clusterNameSupplier() {
+        return new DummySupplier();
+    }
+
+    @Override
+    protected Supplier appNameSupplier(AbstractRequest unusedRequest) {
         return new DummySupplier();
     }
 
