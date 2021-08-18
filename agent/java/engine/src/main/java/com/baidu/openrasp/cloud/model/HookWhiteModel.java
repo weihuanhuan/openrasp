@@ -17,9 +17,11 @@
 package com.baidu.openrasp.cloud.model;
 
 import com.baidu.openrasp.cloud.utils.DoubleArrayTrie;
+import com.baidu.openrasp.config.Config;
 import com.baidu.openrasp.plugin.checker.CheckParameter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -79,8 +81,11 @@ public class HookWhiteModel {
         TreeMap<String, Integer> temp = new TreeMap<String, Integer>();
         for (Map.Entry<Object, Object> hook : hooks.entrySet()) {
             int codeSum = 0;
-            if (hook.getValue() instanceof ArrayList) {
-                ArrayList<String> types = (ArrayList<String>) hook.getValue();
+
+            List<String> hookTypes = collectHookTypes(hook);
+
+            if (hookTypes instanceof ArrayList) {
+                ArrayList<String> types = (ArrayList<String>) hookTypes;
                 if (hook.getKey().equals("*") && types.contains("all")) {
                     for (CheckParameter.Type type : CheckParameter.Type.values()) {
                         if (type.getCode() != 0) {
@@ -115,5 +120,29 @@ public class HookWhiteModel {
             }
         }
         return temp;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<String> collectHookTypes(Map.Entry<Object, Object> hook) {
+        if (hook == null) {
+            return Collections.emptyList();
+        }
+
+        //configuration blocks that have no description information in the old version
+        Object value = hook.getValue();
+        if (value instanceof List) {
+            return (List<String>) value;
+        }
+
+        //configuration blocks that have description information in the new version
+        if (value instanceof Map) {
+            Map<Object, Object> mapValue = (Map<Object, Object>) value;
+            Object types = mapValue.get(Config.getConfig().getHookWhiteTypeField());
+            if (types instanceof List) {
+                return (List<String>) types;
+            }
+        }
+
+        return Collections.emptyList();
     }
 }

@@ -45,13 +45,16 @@
 #  - "welcome1"
 #hooks.ignore: http_output
 debug.level: 1
-#hook.white:
-#  "localhost:8080/vulns/011-ssrf-commons-httpclient.jsp":
-#    - "sql"
-#    - "ssrf"
-#  "www.test.com/test2":
-#    - "sql"
-#    - "ssrf"
+hook.white:
+  "localhost:8080/vulns/011-ssrf-commons-httpclient.jsp":
+    type:
+      - "sql"
+      - "ssrf"
+    description:
+      "httpclient"
+  "www.test.com/test2":
+    - "sql"
+    - "ssrf"
 inject.custom_headers:
   X-Protected-By: OpenRASP
 #   X-Content-Type-Options: nosniff

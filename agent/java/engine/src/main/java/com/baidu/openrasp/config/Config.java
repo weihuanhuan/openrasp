@@ -93,6 +93,8 @@ public class Config extends FileScanListener {
     String syslogUrl;
     String syslogTag;
     int syslogReconnectInterval;
+    String hookWhiteTypeField;
+    String hookWhiteDescriptionField;
     boolean hookWhiteAll;
     int logMaxBurst;
     int heartbeatInterval;
@@ -707,6 +709,14 @@ public class Config extends FileScanListener {
      */
     public int getLogMaxBurst() {
         return logMaxBurst;
+    }
+
+    public String getHookWhiteTypeField() {
+        return hookWhiteTypeField;
+    }
+
+    public String getHookWhiteDescriptionField() {
+        return hookWhiteDescriptionField;
     }
 
     /**
