@@ -540,6 +540,21 @@ public enum ConfigItem {
         }
     }),
 
+    HOOK_WHITE_ENABLED_FIELD(new ConfigSetter<String>("hook.white.enabled.field") {
+        @Override
+        public synchronized void setValue(String hookWhiteEnabledField) {
+            if(StringUtils.isBlank(hookWhiteEnabledField)){
+                throw new ConfigLoadException("the value of " + itemName + " can not be blank");
+            }
+            Config.getConfig().hookWhiteEnabledField = hookWhiteEnabledField;
+        }
+
+        @Override
+        public String getDefaultValue() {
+            return "enabled";
+        }
+    }),
+
     HOOK_WHITE(new ConfigSetter<Map<Object, Object>>("hook.white") {
         @Override
         public synchronized void setValue(Map<Object, Object> hookWhite) {

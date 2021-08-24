@@ -95,6 +95,7 @@ public class Config extends FileScanListener {
     int syslogReconnectInterval;
     String hookWhiteTypeField;
     String hookWhiteDescriptionField;
+    String hookWhiteEnabledField;
     boolean hookWhiteAll;
     int logMaxBurst;
     int heartbeatInterval;
@@ -717,6 +718,10 @@ public class Config extends FileScanListener {
 
     public String getHookWhiteDescriptionField() {
         return hookWhiteDescriptionField;
+    }
+
+    public String getHookWhiteEnabledField() {
+        return hookWhiteEnabledField;
     }
 
     /**

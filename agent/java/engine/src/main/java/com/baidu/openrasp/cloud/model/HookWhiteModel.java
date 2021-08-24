@@ -80,6 +80,11 @@ public class HookWhiteModel {
     public static TreeMap<String, Integer> parseHookWhite(Map<Object, Object> hooks) {
         TreeMap<String, Integer> temp = new TreeMap<String, Integer>();
         for (Map.Entry<Object, Object> hook : hooks.entrySet()) {
+            boolean hookEnabled = isHookEnabled(hook);
+            if (!hookEnabled) {
+                continue;
+            }
+
             int codeSum = 0;
 
             List<String> hookTypes = collectHookTypes(hook);
@@ -120,6 +125,28 @@ public class HookWhiteModel {
             }
         }
         return temp;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean isHookEnabled(Map.Entry<Object, Object> hook) {
+        if (hook == null) {
+            return false;
+        }
+
+        Object value = hook.getValue();
+        if (value instanceof List) {
+            return true;
+        }
+
+        if (value instanceof Map) {
+            Map<Object, Object> mapValue = (Map<Object, Object>) value;
+            Object enabled = mapValue.get(Config.getConfig().getHookWhiteEnabledField());
+            if (enabled instanceof Boolean) {
+                return (Boolean) enabled;
+            }
+        }
+
+        return false;
     }
 
     @SuppressWarnings("unchecked")

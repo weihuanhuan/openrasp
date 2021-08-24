@@ -46,12 +46,37 @@
 #hooks.ignore: http_output
 debug.level: 1
 hook.white:
-  "localhost:8080/vulns/011-ssrf-commons-httpclient.jsp":
+#  "localhost:8080/vulns/011-ssrf-commons-httpclient-comment.jsp":
+#    type:
+#      - "fileUpload"
+#      - "deleteFile"
+#    description:
+#      "httpclient-comment"
+  "localhost:8080/vulns/011-ssrf-commons-httpclient-true.jsp":
     type:
-      - "sql"
       - "ssrf"
+      - "ssrfRedirect"
     description:
-      "httpclient"
+      "httpclient-true"
+    enabled:
+      true
+  "localhost:8080/vulns/011-ssrf-commons-httpclient-false.jsp":
+    type:
+      - "request"
+      - "requestEnd"
+    description:
+      "httpclient-false"
+    enabled:
+      false
+  "localhost:8080/vulns/011-ssrf-commons-httpclient-none.jsp":
+    type:
+      - "readFile"
+      - "writeFile"
+    description:
+      "httpclient-none"
+#  "www.test.com/test1":
+#    - "xxe"
+#    - "include"
   "www.test.com/test2":
     - "sql"
     - "ssrf"
