@@ -21,6 +21,7 @@ import com.baidu.openrasp.cloud.model.CloudCacheModel;
 import com.baidu.openrasp.cloud.utils.CloudUtils;
 import com.baidu.openrasp.config.Config;
 import com.baidu.openrasp.config.ConfigItem;
+import com.baidu.openrasp.config.js.PluginHelper;
 import com.baidu.openrasp.messaging.ErrorType;
 import com.baidu.openrasp.plugin.checker.CheckParameter;
 import org.apache.commons.io.IOUtils;
@@ -86,7 +87,8 @@ public class JSContextFactory extends ContextFactory {
                 clean.call(cx, scope, clean, null);
                 if (checkScriptList != null) {
                     for (CheckScript checkScript : checkScriptList) {
-                        cx.evaluateString(scope, "(function(){\n" + checkScript.getContent() + "\n})()", checkScript.getName(), 0, null);
+                        String mergedPlugin = PluginHelper.mergePlugin(checkScript.getContent(), Config.getConfig().getAlgorithmConfig());
+                        cx.evaluateString(scope, "(function(){\n" + mergedPlugin + "\n})()", checkScript.getName(), 0, null);
                     }
                 }
                 //插件更新成功后，清空全局的LRU缓存

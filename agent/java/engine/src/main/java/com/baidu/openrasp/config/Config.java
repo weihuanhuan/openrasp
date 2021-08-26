@@ -22,6 +22,7 @@ import com.baidu.openrasp.exceptions.ConfigLoadException;
 import com.baidu.openrasp.messaging.ErrorType;
 import com.baidu.openrasp.messaging.LogConfig;
 import com.baidu.openrasp.messaging.LogTool;
+import com.baidu.openrasp.plugin.js.JS;
 import com.baidu.openrasp.tool.FileUtil;
 import com.baidu.openrasp.tool.FilterConstructor;
 import com.baidu.openrasp.tool.LRUCache;
@@ -296,16 +297,19 @@ public class Config extends FileScanListener {
             @Override
             public void onFileCreate(File file) {
                 reloadConfig(file);
+                JS.UpdatePlugin();
             }
 
             @Override
             public void onFileChange(File file) {
                 reloadConfig(file);
+                JS.UpdatePlugin();
             }
 
             @Override
             public void onFileDelete(File file) {
                 reloadConfig(file);
+                JS.UpdatePlugin();
             }
         });
     }

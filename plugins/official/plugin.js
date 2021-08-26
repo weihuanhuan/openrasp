@@ -1279,9 +1279,15 @@ function lcs_search(str1, str2){
     }
     var result_pos_set = new Set(result_pos)
     var result_str = new Set()
-    for (var item of result_pos_set) {
-        result_str.add(str1.substr(item, result))
-    }
+
+    //for (var item of result_pos_set) {
+    //    result_str.add(str1.substr(item, result))
+    //}
+    //上述 for of 语法在老版本的 rhino 中不被支持，
+    //其在 org.mozilla.javascript.IRFactory.transformTree 后会将 (var item of result_pos_set) 解析为 (var itemof result_pos_set)
+    //这里的 item of ，部分被连接到一起成了， itemof ，导致 js 产生了语法错误，
+    //为了避免这个问题我们可以使用 forEach 来替代
+    result_pos_set.forEach( key => result_str.add(str1.substr(key, result)) )
     return Array.from(result_str)
 }
 
