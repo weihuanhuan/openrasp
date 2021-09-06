@@ -18,6 +18,7 @@
 
     <target name="precompiled" depends="init">
         <echo level="info">precompile js file.</echo>
+        <echo level="info">precompile work dir is: ${user.dir}</echo>
 
         <for param="jsFile">
             <path>
@@ -27,8 +28,12 @@
             </path>
 
             <sequential>
+                <echo level="info">precompile js file: @{jsFile}.</echo>
+
                 <var name="jsFileName" unset="true"/>
+                <var name="jsFileFullName" unset="true"/>
                 <basename property="jsFileName" file="@{jsFile}" suffix=".js"/>
+                <basename property="jsFileFullName" file="@{jsFile}"/>
                 <capitalize from="${jsFileName}" to="className"/>
 
                 <java classname="${main}" fork="${fork}">
@@ -46,7 +51,9 @@
                     <arg value="${outputDirectory}"/>
                     <arg value="-o"/>
                     <arg value="${className}"/>
-                    <arg value="@{jsFile}"/>
+                    <!-- rhino 可以读取相对于 ${user.dir} 路径下的问题，而 rhino 会在生成的 class 文件中原样的记录传入的 SOURCE 参数信息 -->
+                    <!-- 故我们不使用 绝对路径，就可以防止 rhino 生成的 class 文件中包含原始 js 文件的绝对路径信息了  -->
+                    <arg value="src/main/resources/js/${jsFileFullName}"/>
                 </java>
             </sequential>
         </for>
