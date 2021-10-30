@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -170,6 +171,15 @@ public class HookHandler {
         if (tmpEnableCurrThreadHook.get()) {
             enableCurrThreadHook();
         }
+    }
+
+    /**
+     * pre-initialize UUID
+     */
+    static {
+        preShieldHook();
+        UUID.randomUUID();
+        postShieldHook();
     }
 
     /**
