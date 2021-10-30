@@ -68,7 +68,8 @@ public class ModuleLoader {
         }
         ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
         while (systemClassLoader.getParent() != null
-                && !systemClassLoader.getClass().getName().equals("sun.misc.Launcher$ExtClassLoader")) {
+                && !systemClassLoader.getClass().getName().equals("sun.misc.Launcher$ExtClassLoader")
+                && !systemClassLoader.getClass().getName().equals("jdk.internal.loader.ClassLoaders$PlatformClassLoader")) {
             systemClassLoader = systemClassLoader.getParent();
         }
         moduleClassLoader = systemClassLoader;
