@@ -16,6 +16,7 @@
 
 package com.baidu.openrasp;
 
+import com.baidu.openrasp.cloud.model.HookAppModel;
 import com.baidu.openrasp.cloud.model.HookWhiteModel;
 import com.baidu.openrasp.config.Config;
 import com.baidu.openrasp.exceptions.SecurityException;
@@ -174,11 +175,12 @@ public class HookHandler {
     }
 
     /**
-     * pre-initialize UUID
+     * pre-initialize
      */
     static {
         preShieldHook();
         UUID.randomUUID();
+        HookAppModel.init();
         postShieldHook();
     }
 
@@ -360,6 +362,9 @@ public class HookHandler {
                     StringBuffer sb = requestCache.get().getRequestURL();
                     if (sb != null) {
                         String url = sb.substring(sb.indexOf("://") + 3);
+                        if (HookAppModel.isContainApp(requestCache.get())) {
+                            return;
+                        }
                         if (HookWhiteModel.isContainURL(type.getCode(), url)) {
                             return;
                         }
