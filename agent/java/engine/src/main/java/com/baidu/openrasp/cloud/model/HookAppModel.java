@@ -29,6 +29,8 @@ public class HookAppModel {
             return;
         }
 
+        //TODO server name cannot get when reap init engine, only any is valid
+        //TODO app name can repeat between difference virtual hosts
         String serverName = ApplicationModel.getServerName();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             String key = (String) entry.getKey();
